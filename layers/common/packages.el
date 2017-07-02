@@ -30,7 +30,10 @@
 ;;; Code:
 
 (defconst common-packages
-  '()
+  '(
+    all-the-icons
+    neotree
+    )
   "The list of Lisp packages required by the common layer.
 
 Each entry is either:
@@ -58,6 +61,13 @@ Each entry is either:
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
+(defun common/init-all-the-icons()
+  (require 'all-the-icons)
+  )
+
+(defun common/post-init-neotree()
+  (setq neo-theme (if (display-graphic-p) 'icons 'arrow))
+  )
 
 ;;; packages.el ends here
 (defun open-common-layer-file()
