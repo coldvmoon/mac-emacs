@@ -80,5 +80,13 @@ Each entry is either:
   (find-file "~/.spacemacs.d/init.el")
   )
 (global-set-key (kbd "<f4>") 'open-spacemacsd-file)
-(setq projectile-project-root "/Volumes/work/emacs/")
- 
+
+(setq my-warehouse-root "/Volumes/work/emacs")
+
+;;projectile
+(setq projectile-project-root my-warehouse-root)
+
+
+;;agenda
+(setq org-agenda-files (list (concat my-warehouse-root "/agenda/")))
+
