@@ -61,6 +61,7 @@ Each entry is either:
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
+;; neotree
 (defun common/init-all-the-icons()
   (require 'all-the-icons)
   )
@@ -69,7 +70,7 @@ Each entry is either:
   (setq neo-theme (if (display-graphic-p) 'icons 'arrow))
   )
 
-;;; packages.el ends here
+;;; keymap
 (defun open-common-layer-file()
   (interactive)
   (find-file "~/.spacemacs.d/layers/common/packages.el") )
@@ -79,5 +80,5 @@ Each entry is either:
   (find-file "~/.spacemacs.d/init.el")
   )
 (global-set-key (kbd "<f4>") 'open-spacemacsd-file)
-(setq projectile-project-root "~/coldvmoon.github.io/org")
+(setq projectile-project-root "/Volumes/work/emacs/")
  
