@@ -81,15 +81,20 @@ Each entry is either:
   )
 (global-set-key (kbd "<f4>") 'open-spacemacsd-file)
 
+
+;; agenda
+(setq org-agenda-include-diary t)
+
 ;; define the refile targets
 (defvar org-agenda-dir "/Volumes/work/emacs/agenda" "gtd org files location")
 (setq org-agenda-file-inbox (expand-file-name "inbox" org-agenda-dir))
 (setq org-agenda-file-note (expand-file-name "notes.org" org-agenda-dir))
 (setq org-agenda-file-gtd (expand-file-name "gtd.org" org-agenda-dir))
+(setq org-agenda-file-habbits (expand-file-name "habbits.org" org-agenda-dir))
 (setq org-agenda-file-journal (expand-file-name "journal.org" org-agenda-dir))
 (setq org-agenda-file-code-snippet (expand-file-name "snippet.org" org-agenda-dir))
 (setq org-default-notes-file (expand-file-name "gtd.org" org-agenda-dir))
-(setq org-agenda-files (list org-agenda-file-gtd))
+(setq org-agenda-files (list org-agenda-file-gtd org-agenda-file-habbits))
 
 (with-eval-after-load 'org-agenda
   (define-key org-agenda-mode-map (kbd "P") 'org-pomodoro)
@@ -144,9 +149,56 @@ Each entry is either:
         ("pl" tags-todo "PROJECT+DREAM+CATEGORY=\"zilongshanren\"")
         ("W" "Weekly Review"
          ((stuck "") ;; review stuck projects as designated by org-stuck-projects
-          (tags-todo "PROJECT") ;; review all projects (assuming you use todo keywords to designate projects)
+          (tags-todo "DAILY") ;; review all projects (assuming you use todo keywords to designate projects)
+          (tags-todo "WEEKLY") ;; review all projects (assuming you use todo keywords to designate projects)
           ))))
 
 (setq org-refile-targets '(("~/warehouse/gtd/gtd.org" :maxlevel . 3)
                            ("~/warehouse/gtd/someday.org" :level . 1)
                            ("~/warehouse/gtd/tickler.org" :maxlevel . 2)))
+(defun org-summary-todo (n-done n-not-done)
+  "Switch entry to DONE when all subentries are done, to TODO otherwise."
+  (let (org-log-done org-log-states)   ; turn off logging
+    (org-todo (if (= n-not-done 0) "DONE" "TODO")))
+     
+  )
+(add-hook 'org-after-todo-statistics-hook 'org-summary-todo)
+(defun skip-daily-tasks () 
+  (let ((next-headline (save-excursion (or (outline-next-heading) (point-max))))
+        (headline (or (and (org-at-heading-p) (point))
+                      (save-excursion (org-back-to-heading)))))
+    (if (string= (org-get-repeat) "+1d")
+        next-headline
+      nil)))
+
+(add-to-list 'org-agenda-custom-commands
+             '("w" "Weekly"
+               agenda ""
+               ((org-agenda-span 'week)
+                (org-agenda-skip-function 'skip-daily-tasks))
+               ))
+(defun my/org-checkbox-todo ()
+  "Switch header TODO state to DONE when all checkboxes are ticked, to TODO otherwise"
+  (let ((todo-state (org-get-todo-state)) beg end)
+    (unless (not todo-state)
+      (save-excursion
+        (org-back-to-heading t)
+        (setq beg (point))
+        (end-of-line)
+        (setq end (point))
+        (goto-char beg)
+        (if (re-search-forward "\\[\\([0-9]*%\\)\\]\\|\\[\\([0-9]*\\)/\\([0-9]*\\)\\]"
+                               end t)
+            (if (match-end 1)
+                (if (equal (match-string 1) "100%")
+                    (unless (string-equal todo-state "DONE")
+                      (org-todo 'done))
+                  (unless (string-equal todo-state "TODO")
+                    (org-todo 'todo)))
+              (if (and (> (match-end 2) (match-beginning 2))
+                       (equal (match-string 2) (match-string 3)))
+                  (unless (string-equal todo-state "DONE")
+                    (org-todo 'done))
+                (unless (string-equal todo-state "TODO")
+                  (org-todo 'todo)))))))))
+(add-hook 'org-checkbox-statistics-hook 'my/org-checkbox-todo)
