@@ -90,7 +90,7 @@ Each entry is either:
 (setq org-agenda-file-inbox (expand-file-name "inbox" org-agenda-dir))
 (setq org-agenda-file-note (expand-file-name "notes.org" org-agenda-dir))
 (setq org-agenda-file-gtd (expand-file-name "gtd.org" org-agenda-dir))
-(setq org-agenda-file-habbits (expand-file-name "habbits.org" org-agenda-dir))
+(setq org-agenda-file-habbits (expand-file-name "habits.org" org-agenda-dir))
 (setq org-agenda-file-journal (expand-file-name "journal.org" org-agenda-dir))
 (setq org-agenda-file-code-snippet (expand-file-name "snippet.org" org-agenda-dir))
 (setq org-default-notes-file (expand-file-name "gtd.org" org-agenda-dir))
@@ -171,12 +171,7 @@ Each entry is either:
         next-headline
       nil)))
 
-(add-to-list 'org-agenda-custom-commands
-             '("w" "Weekly"
-               agenda ""
-               ((org-agenda-span 'week)
-                (org-agenda-skip-function 'skip-daily-tasks))
-               ))
+
 (defun my/org-checkbox-todo ()
   "Switch header TODO state to DONE when all checkboxes are ticked, to TODO otherwise"
   (let ((todo-state (org-get-todo-state)) beg end)
@@ -192,13 +187,22 @@ Each entry is either:
             (if (match-end 1)
                 (if (equal (match-string 1) "100%")
                     (unless (string-equal todo-state "DONE")
-                      (org-todo 'done))
+                      (org-todo 'done)
+                      (org-reset-checkbox-state-subtree)
+                      )
                   (unless (string-equal todo-state "TODO")
                     (org-todo 'todo)))
               (if (and (> (match-end 2) (match-beginning 2))
                        (equal (match-string 2) (match-string 3)))
                   (unless (string-equal todo-state "DONE")
-                    (org-todo 'done))
+                    (org-todo 'done)
+                    (org-reset-checkbox-state-subtree)
+                    )
                 (unless (string-equal todo-state "TODO")
-                  (org-todo 'todo)))))))))
+                  (org-todo 'todo)
+                  ))))))))
 (add-hook 'org-checkbox-statistics-hook 'my/org-checkbox-todo)
+
+
+;;org-mode config
+(setq org-startup-indented t)
