@@ -28,7 +28,7 @@
 ;;   `common/post-init-PACKAGE' to customize the package as it is loaded.
 
 ;;; Code:
-
+(setq base-project "/Volumes/work/emacs")
 (defconst common-packages
   '(
     all-the-icons
@@ -86,7 +86,7 @@ Each entry is either:
 (setq org-agenda-include-diary t)
 
 ;; define the refile targets
-(defvar org-agenda-dir "/Volumes/work/emacs/agenda" "gtd org files location")
+(defvar org-agenda-dir (expand-file-name "/Volumes/work/emacs/agenda" base-project) "gtd org files location")
 (setq org-agenda-file-inbox (expand-file-name "inbox" org-agenda-dir))
 (setq org-agenda-file-note (expand-file-name "notes.org" org-agenda-dir))
 (setq org-agenda-file-gtd (expand-file-name "gtd.org" org-agenda-dir))
@@ -206,3 +206,10 @@ Each entry is either:
 
 ;;org-mode config
 (setq org-startup-indented t)
+
+
+(require 'epa-file)
+(custom-set-variables '(epg-gpg-program  "/usr/local/bin/gpg2"))
+(epa-file-enable)
+(setq org-crypt-key "xkwu1990")
+;;(setq auto-save-default nil)
