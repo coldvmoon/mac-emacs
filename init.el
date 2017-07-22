@@ -301,6 +301,7 @@ values."
    ))
 
 (defun dotspacemacs/user-init ()
+  (add-to-list 'load-path "~/.spacemacs.d/elpa")
   "Initialization function for user code.
 It is called immediately after `dotspacemacs/init', before layer configuration
 executes.
