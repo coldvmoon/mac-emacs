@@ -88,7 +88,7 @@ Each entry is either:
 
 ;; define the refile targets
 (defvar org-agenda-dir (expand-file-name "/Volumes/work/emacs/agenda" base-project) "gtd org files location")
-(setq org-agenda-file-inbox (expand-file-name "inbox" org-agenda-dir))
+(setq org-agenda-file-inbox (expand-file-name "inbox.org" org-agenda-dir))
 (setq org-agenda-file-note (expand-file-name "notes.org" org-agenda-dir))
 (setq org-agenda-file-gtd (expand-file-name "gtd.org" org-agenda-dir))
 (setq org-agenda-file-habbits (expand-file-name "habits.org" org-agenda-dir))
@@ -107,7 +107,7 @@ Each entry is either:
 ;;add multi-file journal
 (setq org-capture-templates
       '(
-        ("i" "" entry (file+headline org-agenda-file-gtd "In box")
+        ("i" "Inbox" entry (file+headline org-agenda-file-gtd "In box")
          "* TODO [#B] %?\n  %i\n"
          :empty-lines 1)
         ("t" "Todo" entry (file+headline org-agenda-file-gtd "Workspace")
